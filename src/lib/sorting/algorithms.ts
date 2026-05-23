@@ -248,7 +248,7 @@ export async function quickSort(ctx: SortContext) {
 
 async function heapify(ctx: SortContext, n: number, i: number) {
   if (ctx.shouldStop()) return;
-  ctx.setActiveLine(2);
+  ctx.setActiveLine(6);
   let largest = i;
   const l = 2 * i + 1;
   const r = 2 * i + 2;
@@ -261,7 +261,7 @@ async function heapify(ctx: SortContext, n: number, i: number) {
     if (val(ctx.arr[r].pokemon, ctx.key) > val(ctx.arr[largest].pokemon, ctx.key)) largest = r;
   }
   if (largest !== i) {
-    ctx.setActiveLine(5);
+    ctx.setActiveLine(7);
     await swap(ctx, i, largest);
     await heapify(ctx, n, largest);
   }
@@ -272,14 +272,17 @@ export async function heapSort(ctx: SortContext) {
   ctx.setHeapSize?.(n);
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     if (ctx.shouldStop()) return;
+    ctx.setActiveLine(1);
     await heapify(ctx, n, i);
   }
   for (let i = n - 1; i > 0; i--) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(8);
+    ctx.setActiveLine(2);
+    ctx.setActiveLine(3);
     await swap(ctx, 0, i);
     markSorted(ctx, i);
     ctx.setHeapSize?.(i);
+    ctx.setActiveLine(4);
     await heapify(ctx, i, 0);
   }
   markSorted(ctx, 0);
