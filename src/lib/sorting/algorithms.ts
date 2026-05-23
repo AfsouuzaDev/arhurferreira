@@ -161,6 +161,28 @@ async function mergeRange(ctx: SortContext, l: number, r: number) {
   const left = ctx.arr.slice(l, m + 1).map((x) => x.pokemon);
   const right = ctx.arr.slice(m + 1, r + 1).map((x) => x.pokemon);
   let i = 0, j = 0, k = l;
+  if (ctx.fast) {
+    while (i < left.length && j < right.length) {
+      ctx.comparisons++;
+      if (val(left[i], ctx.key) <= val(right[j], ctx.key)) {
+        if (ctx.arr[k].pokemon.id !== left[i].id) { ctx.swaps++; ctx.arr[k] = { pokemon: left[i], state: "neutral" }; }
+        i++;
+      } else {
+        if (ctx.arr[k].pokemon.id !== right[j].id) { ctx.swaps++; ctx.arr[k] = { pokemon: right[j], state: "neutral" }; }
+        j++;
+      }
+      k++;
+    }
+    while (i < left.length) {
+      if (ctx.arr[k].pokemon.id !== left[i].id) { ctx.swaps++; ctx.arr[k] = { pokemon: left[i], state: "neutral" }; }
+      i++; k++;
+    }
+    while (j < right.length) {
+      if (ctx.arr[k].pokemon.id !== right[j].id) { ctx.swaps++; ctx.arr[k] = { pokemon: right[j], state: "neutral" }; }
+      j++; k++;
+    }
+    return;
+  }
   while (i < left.length && j < right.length) {
     if (ctx.shouldStop()) return;
     ctx.comparisons++;
