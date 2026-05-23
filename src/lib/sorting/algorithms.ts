@@ -89,17 +89,20 @@ export async function selectionSort(ctx: SortContext) {
   const n = ctx.arr.length;
   for (let i = 0; i < n - 1; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     let min = i;
+    ctx.setActiveLine(2);
     for (let j = i + 1; j < n; j++) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       await compare(ctx, min, j);
+      ctx.setActiveLine(4);
       if (val(ctx.arr[j].pokemon, ctx.key) < val(ctx.arr[min].pokemon, ctx.key)) {
         ctx.setActiveLine(5);
         min = j;
       }
     }
+    ctx.setActiveLine(6);
     if (min !== i) {
       ctx.setActiveLine(7);
       await swap(ctx, i, min);
