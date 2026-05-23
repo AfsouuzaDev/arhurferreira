@@ -139,8 +139,10 @@ export async function insertionSort(ctx: SortContext) {
 
 async function mergeRange(ctx: SortContext, l: number, r: number) {
   if (l >= r || ctx.shouldStop()) return;
+  ctx.setActiveLine(1);
   const m = Math.floor((l + r) / 2);
   ctx.setActiveLine(2);
+  ctx.setActiveLine(3);
   await mergeRange(ctx, l, m);
   await mergeRange(ctx, m + 1, r);
   ctx.setActiveLine(4);
