@@ -212,21 +212,22 @@ export async function mergeSort(ctx: SortContext) {
 }
 
 async function partition(ctx: SortContext, lo: number, hi: number): Promise<number> {
-  ctx.setActiveLine(2);
+  ctx.setActiveLine(1);
   const pivot = ctx.arr[hi].pokemon;
   ctx.log(`[PVT] Pivô = ${pivot.name.toUpperCase()}(${val(pivot, ctx.key)})`);
+  ctx.setActiveLine(2);
   let i = lo - 1;
+  ctx.setActiveLine(3);
   for (let j = lo; j < hi; j++) {
     if (ctx.shouldStop()) return i + 1;
     ctx.setActiveLine(4);
     await compare(ctx, j, hi);
     if (val(ctx.arr[j].pokemon, ctx.key) <= val(pivot, ctx.key)) {
       i++;
-      ctx.setActiveLine(5);
       if (i !== j) await swap(ctx, i, j);
     }
   }
-  ctx.setActiveLine(7);
+  ctx.setActiveLine(5);
   await swap(ctx, i + 1, hi);
   return i + 1;
 }
@@ -234,6 +235,7 @@ async function partition(ctx: SortContext, lo: number, hi: number): Promise<numb
 async function quickRange(ctx: SortContext, lo: number, hi: number) {
   if (lo < hi && !ctx.shouldStop()) {
     const p = await partition(ctx, lo, hi);
+    ctx.setActiveLine(6);
     await quickRange(ctx, lo, p - 1);
     await quickRange(ctx, p + 1, hi);
   }
