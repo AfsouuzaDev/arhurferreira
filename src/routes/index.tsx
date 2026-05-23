@@ -43,7 +43,7 @@ function Dashboard() {
 
   useEffect(() => { engine.setSpeed(speed); }, [speed, engine]);
 
-  const visualize = sampleSize <= 100;
+  const visualize = true;
 
   const handlePlay = async () => {
     await engine.run(algorithm, sortKey, visualize);
