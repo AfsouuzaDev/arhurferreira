@@ -117,15 +117,18 @@ export async function insertionSort(ctx: SortContext) {
   markSorted(ctx, 0);
   for (let i = 1; i < n; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     let j = i;
+    ctx.setActiveLine(2);
     while (j > 0) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       await compare(ctx, j - 1, j);
+      ctx.setActiveLine(4);
       if (val(ctx.arr[j - 1].pokemon, ctx.key) > val(ctx.arr[j].pokemon, ctx.key)) {
         ctx.setActiveLine(5);
         await swap(ctx, j - 1, j);
+        ctx.setActiveLine(6);
         j--;
       } else break;
     }
