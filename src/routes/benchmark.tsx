@@ -37,6 +37,7 @@ async function runFast(key: AlgorithmKey, sortKey: SortKey, items: SortItem[]) {
     setHeapSize: () => {},
     sleep: async () => {},
     shouldStop: () => false,
+    fast: true,
   };
   Object.defineProperty(ctx, "comparisons", { get: () => c, set: (v: number) => { c = v; } });
   Object.defineProperty(ctx, "swaps", { get: () => s, set: (v: number) => { s = v; } });

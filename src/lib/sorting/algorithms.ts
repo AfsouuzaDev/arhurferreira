@@ -29,12 +29,14 @@ export interface SortContext {
   setHeapSize?: (n: number) => void;
   sleep: () => Promise<void>;
   shouldStop: () => boolean;
+  fast?: boolean;
 }
 
 const val = (p: Pokemon, k: SortKey) => p[k];
 
 async function compare(ctx: SortContext, i: number, j: number) {
   ctx.comparisons++;
+  if (ctx.fast) return;
   ctx.setMetrics(ctx.comparisons, ctx.swaps);
   const a = ctx.arr[i], b = ctx.arr[j];
   a.state = "comparing"; b.state = "comparing";
@@ -46,6 +48,12 @@ async function compare(ctx: SortContext, i: number, j: number) {
 
 async function swap(ctx: SortContext, i: number, j: number) {
   ctx.swaps++;
+  if (ctx.fast) {
+    const t = ctx.arr[i];
+    ctx.arr[i] = ctx.arr[j];
+    ctx.arr[j] = t;
+    return;
+  }
   ctx.setMetrics(ctx.comparisons, ctx.swaps);
   ctx.arr[i].state = "swapping";
   ctx.arr[j].state = "swapping";
@@ -61,6 +69,7 @@ async function swap(ctx: SortContext, i: number, j: number) {
 }
 
 function markSorted(ctx: SortContext, i: number) {
+  if (ctx.fast) return;
   ctx.arr[i].state = "sorted";
   ctx.setArr([...ctx.arr]);
 }
@@ -132,8 +141,10 @@ export async function insertionSort(ctx: SortContext) {
         j--;
       } else break;
     }
-    for (let k = 0; k <= i; k++) ctx.arr[k].state = "sorted";
-    ctx.setArr([...ctx.arr]);
+    if (!ctx.fast) {
+      for (let k = 0; k <= i; k++) ctx.arr[k].state = "sorted";
+      ctx.setArr([...ctx.arr]);
+    }
   }
 }
 
@@ -150,6 +161,28 @@ async function mergeRange(ctx: SortContext, l: number, r: number) {
   const left = ctx.arr.slice(l, m + 1).map((x) => x.pokemon);
   const right = ctx.arr.slice(m + 1, r + 1).map((x) => x.pokemon);
   let i = 0, j = 0, k = l;
+  if (ctx.fast) {
+    while (i < left.length && j < right.length) {
+      ctx.comparisons++;
+      if (val(left[i], ctx.key) <= val(right[j], ctx.key)) {
+        if (ctx.arr[k].pokemon.id !== left[i].id) { ctx.swaps++; ctx.arr[k] = { pokemon: left[i], state: "neutral" }; }
+        i++;
+      } else {
+        if (ctx.arr[k].pokemon.id !== right[j].id) { ctx.swaps++; ctx.arr[k] = { pokemon: right[j], state: "neutral" }; }
+        j++;
+      }
+      k++;
+    }
+    while (i < left.length) {
+      if (ctx.arr[k].pokemon.id !== left[i].id) { ctx.swaps++; ctx.arr[k] = { pokemon: left[i], state: "neutral" }; }
+      i++; k++;
+    }
+    while (j < right.length) {
+      if (ctx.arr[k].pokemon.id !== right[j].id) { ctx.swaps++; ctx.arr[k] = { pokemon: right[j], state: "neutral" }; }
+      j++; k++;
+    }
+    return;
+  }
   while (i < left.length && j < right.length) {
     if (ctx.shouldStop()) return;
     ctx.comparisons++;
