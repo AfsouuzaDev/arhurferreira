@@ -141,8 +141,10 @@ export async function insertionSort(ctx: SortContext) {
         j--;
       } else break;
     }
-    for (let k = 0; k <= i; k++) ctx.arr[k].state = "sorted";
-    ctx.setArr([...ctx.arr]);
+    if (!ctx.fast) {
+      for (let k = 0; k <= i; k++) ctx.arr[k].state = "sorted";
+      ctx.setArr([...ctx.arr]);
+    }
   }
 }
 
