@@ -69,14 +69,14 @@ export async function bubbleSort(ctx: SortContext) {
   const n = ctx.arr.length;
   for (let i = 0; i < n - 1; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     for (let j = 0; j < n - i - 1; j++) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(3);
+      ctx.setActiveLine(2);
       await compare(ctx, j, j + 1);
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       if (val(ctx.arr[j].pokemon, ctx.key) > val(ctx.arr[j + 1].pokemon, ctx.key)) {
-        ctx.setActiveLine(5);
+        ctx.setActiveLine(4);
         await swap(ctx, j, j + 1);
       }
     }
@@ -89,17 +89,20 @@ export async function selectionSort(ctx: SortContext) {
   const n = ctx.arr.length;
   for (let i = 0; i < n - 1; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     let min = i;
+    ctx.setActiveLine(2);
     for (let j = i + 1; j < n; j++) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       await compare(ctx, min, j);
+      ctx.setActiveLine(4);
       if (val(ctx.arr[j].pokemon, ctx.key) < val(ctx.arr[min].pokemon, ctx.key)) {
         ctx.setActiveLine(5);
         min = j;
       }
     }
+    ctx.setActiveLine(6);
     if (min !== i) {
       ctx.setActiveLine(7);
       await swap(ctx, i, min);
@@ -114,15 +117,18 @@ export async function insertionSort(ctx: SortContext) {
   markSorted(ctx, 0);
   for (let i = 1; i < n; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     let j = i;
+    ctx.setActiveLine(2);
     while (j > 0) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       await compare(ctx, j - 1, j);
+      ctx.setActiveLine(4);
       if (val(ctx.arr[j - 1].pokemon, ctx.key) > val(ctx.arr[j].pokemon, ctx.key)) {
         ctx.setActiveLine(5);
         await swap(ctx, j - 1, j);
+        ctx.setActiveLine(6);
         j--;
       } else break;
     }
@@ -133,8 +139,10 @@ export async function insertionSort(ctx: SortContext) {
 
 async function mergeRange(ctx: SortContext, l: number, r: number) {
   if (l >= r || ctx.shouldStop()) return;
+  ctx.setActiveLine(1);
   const m = Math.floor((l + r) / 2);
   ctx.setActiveLine(2);
+  ctx.setActiveLine(3);
   await mergeRange(ctx, l, m);
   await mergeRange(ctx, m + 1, r);
   ctx.setActiveLine(4);
@@ -204,21 +212,22 @@ export async function mergeSort(ctx: SortContext) {
 }
 
 async function partition(ctx: SortContext, lo: number, hi: number): Promise<number> {
-  ctx.setActiveLine(2);
+  ctx.setActiveLine(1);
   const pivot = ctx.arr[hi].pokemon;
   ctx.log(`[PVT] Pivô = ${pivot.name.toUpperCase()}(${val(pivot, ctx.key)})`);
+  ctx.setActiveLine(2);
   let i = lo - 1;
+  ctx.setActiveLine(3);
   for (let j = lo; j < hi; j++) {
     if (ctx.shouldStop()) return i + 1;
     ctx.setActiveLine(4);
     await compare(ctx, j, hi);
     if (val(ctx.arr[j].pokemon, ctx.key) <= val(pivot, ctx.key)) {
       i++;
-      ctx.setActiveLine(5);
       if (i !== j) await swap(ctx, i, j);
     }
   }
-  ctx.setActiveLine(7);
+  ctx.setActiveLine(5);
   await swap(ctx, i + 1, hi);
   return i + 1;
 }
@@ -226,6 +235,7 @@ async function partition(ctx: SortContext, lo: number, hi: number): Promise<numb
 async function quickRange(ctx: SortContext, lo: number, hi: number) {
   if (lo < hi && !ctx.shouldStop()) {
     const p = await partition(ctx, lo, hi);
+    ctx.setActiveLine(6);
     await quickRange(ctx, lo, p - 1);
     await quickRange(ctx, p + 1, hi);
   }
@@ -238,7 +248,7 @@ export async function quickSort(ctx: SortContext) {
 
 async function heapify(ctx: SortContext, n: number, i: number) {
   if (ctx.shouldStop()) return;
-  ctx.setActiveLine(2);
+  ctx.setActiveLine(6);
   let largest = i;
   const l = 2 * i + 1;
   const r = 2 * i + 2;
@@ -251,7 +261,7 @@ async function heapify(ctx: SortContext, n: number, i: number) {
     if (val(ctx.arr[r].pokemon, ctx.key) > val(ctx.arr[largest].pokemon, ctx.key)) largest = r;
   }
   if (largest !== i) {
-    ctx.setActiveLine(5);
+    ctx.setActiveLine(7);
     await swap(ctx, i, largest);
     await heapify(ctx, n, largest);
   }
@@ -262,14 +272,17 @@ export async function heapSort(ctx: SortContext) {
   ctx.setHeapSize?.(n);
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     if (ctx.shouldStop()) return;
+    ctx.setActiveLine(1);
     await heapify(ctx, n, i);
   }
   for (let i = n - 1; i > 0; i--) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(8);
+    ctx.setActiveLine(2);
+    ctx.setActiveLine(3);
     await swap(ctx, 0, i);
     markSorted(ctx, i);
     ctx.setHeapSize?.(i);
+    ctx.setActiveLine(4);
     await heapify(ctx, i, 0);
   }
   markSorted(ctx, 0);
