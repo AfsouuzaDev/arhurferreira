@@ -69,14 +69,14 @@ export async function bubbleSort(ctx: SortContext) {
   const n = ctx.arr.length;
   for (let i = 0; i < n - 1; i++) {
     if (ctx.shouldStop()) return;
-    ctx.setActiveLine(2);
+    ctx.setActiveLine(1);
     for (let j = 0; j < n - i - 1; j++) {
       if (ctx.shouldStop()) return;
-      ctx.setActiveLine(3);
+      ctx.setActiveLine(2);
       await compare(ctx, j, j + 1);
-      ctx.setActiveLine(4);
+      ctx.setActiveLine(3);
       if (val(ctx.arr[j].pokemon, ctx.key) > val(ctx.arr[j + 1].pokemon, ctx.key)) {
-        ctx.setActiveLine(5);
+        ctx.setActiveLine(4);
         await swap(ctx, j, j + 1);
       }
     }
