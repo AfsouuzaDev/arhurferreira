@@ -29,12 +29,14 @@ export interface SortContext {
   setHeapSize?: (n: number) => void;
   sleep: () => Promise<void>;
   shouldStop: () => boolean;
+  fast?: boolean;
 }
 
 const val = (p: Pokemon, k: SortKey) => p[k];
 
 async function compare(ctx: SortContext, i: number, j: number) {
   ctx.comparisons++;
+  if (ctx.fast) return;
   ctx.setMetrics(ctx.comparisons, ctx.swaps);
   const a = ctx.arr[i], b = ctx.arr[j];
   a.state = "comparing"; b.state = "comparing";
@@ -46,6 +48,12 @@ async function compare(ctx: SortContext, i: number, j: number) {
 
 async function swap(ctx: SortContext, i: number, j: number) {
   ctx.swaps++;
+  if (ctx.fast) {
+    const t = ctx.arr[i];
+    ctx.arr[i] = ctx.arr[j];
+    ctx.arr[j] = t;
+    return;
+  }
   ctx.setMetrics(ctx.comparisons, ctx.swaps);
   ctx.arr[i].state = "swapping";
   ctx.arr[j].state = "swapping";
@@ -61,6 +69,7 @@ async function swap(ctx: SortContext, i: number, j: number) {
 }
 
 function markSorted(ctx: SortContext, i: number) {
+  if (ctx.fast) return;
   ctx.arr[i].state = "sorted";
   ctx.setArr([...ctx.arr]);
 }
