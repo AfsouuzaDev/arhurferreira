@@ -6,6 +6,7 @@ import { ControlPanel } from "@/components/sorting/ControlPanel";
 import { PokemonCard } from "@/components/sorting/PokemonCard";
 import { DiagnosticPanel } from "@/components/sorting/DiagnosticPanel";
 import { HeapTree } from "@/components/sorting/HeapTree";
+import { ActionLegend } from "@/components/sorting/ActionLegend";
 import type { AlgorithmKey, SortKey } from "@/lib/sorting/algorithms";
 
 export const Route = createFileRoute("/")({
@@ -79,6 +80,8 @@ function Dashboard() {
           onStep={engine.step}
           onReset={() => engine.reset(sample)}
         />
+
+        <ActionLegend />
 
         {algorithm === "heap" && visualize && (
           <HeapTree items={engine.items} heapSize={engine.heapSize || engine.items.length} sortKey={sortKey} />
