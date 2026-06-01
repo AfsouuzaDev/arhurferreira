@@ -74,10 +74,8 @@ function Benchmark() {
     const out: Result[] = [];
     for (const k of Object.keys(ALGORITHMS) as AlgorithmKey[]) {
       setProgress(`Executando ${ALGORITHMS[k].name}...`);
-      // Clone fresh
       const clone = items.map((it) => ({ pokemon: it.pokemon, state: "neutral" as const }));
-      // Yield to UI
-      await new Promise((r) => setTimeout(r, 10));
+      await new Promise((r) => setTimeout(r, 30));
       const r = await runFast(k, sortKey, clone);
       out.push({
         key: k,
@@ -87,8 +85,10 @@ function Benchmark() {
         elapsed: r.elapsed,
         complexity: ALGORITHM_INFO[k].complexity.average,
       });
+      // Push partial results so table + charts update live
+      setResults([...out]);
+      await new Promise((r) => setTimeout(r, 30));
     }
-    setResults(out);
     setProgress("");
     setRunning(false);
   };
