@@ -6,8 +6,8 @@ interface Props {
   setAlgo: (a: SearchAlgoKey) => void;
   mode: SearchMode;
   setMode: (m: SearchMode) => void;
-  key: SearchKey;
-  setKey: (k: SearchKey) => void;
+  searchKey: SearchKey;
+  setSearchKey: (k: SearchKey) => void;
   term: string;
   setTerm: (t: string) => void;
   sampleSize: number;
