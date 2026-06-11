@@ -107,7 +107,7 @@ function SearchView() {
             <SearchControlPanel
               algo={algo} setAlgo={setAlgo}
               mode={mode} setMode={setMode}
-              key={key} setKey={setKey}
+              searchKey={key} setSearchKey={setKey}
               term={term} setTerm={setTerm}
               sampleSize={sampleSize} setSampleSize={setSampleSize}
               speed={speed} setSpeed={setSpeedState}

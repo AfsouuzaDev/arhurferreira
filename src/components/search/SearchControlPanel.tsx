@@ -97,8 +97,8 @@ export function SearchControlPanel(p: Props) {
           <div>
             <div className="text-[10px] text-neon-cyan mb-1">// CHAVE (ORDENAÇÃO)</div>
             <select
-              value={p.key}
-              onChange={(e) => p.setKey(e.target.value as SearchKey)}
+              value={p.searchKey}
+              onChange={(e) => p.setSearchKey(e.target.value as SearchKey)}
               disabled={p.runState === "running"}
               className="w-full bg-background border border-neon-cyan/60 px-2 py-1 text-xs text-neon-yellow uppercase clip-cyber-sm"
             >
