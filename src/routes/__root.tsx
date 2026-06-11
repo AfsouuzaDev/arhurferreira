@@ -77,6 +77,7 @@ function AppHeader() {
   const loc = useLocation();
   const tabs = [
     { to: "/", label: "Dashboard" },
+    { to: "/buscar", label: "Buscar" },
     { to: "/benchmark", label: "Análise / Benchmark" },
   ];
   return (
