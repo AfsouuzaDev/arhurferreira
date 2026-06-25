@@ -185,6 +185,43 @@ export const SEARCH_INFO: Record<SearchAlgoKey, {
   },
 };
 
+// Dry-run: count comparisons without animation/state updates.
+export function dryRunLinear(pokemons: Pokemon[], mode: SearchMode, term: string): { comparisons: number; hits: number } {
+  const t = term.trim().toLowerCase();
+  let comps = 0, hits = 0;
+  if (!t) return { comparisons: 0, hits: 0 };
+  for (let i = 0; i < pokemons.length; i++) {
+    comps++;
+    const p = pokemons[i];
+    const ok = mode === "id" ? String(p.id) === t : mode === "name" ? p.name.toLowerCase() === t : p.name.toLowerCase().includes(t);
+    if (ok) hits++;
+  }
+  return { comparisons: comps, hits };
+}
+
+export function dryRunBinary(pokemons: Pokemon[], key: SearchKey, term: string): { comparisons: number; hits: number; feasible: boolean } {
+  if (!isSortedBy(pokemons, key)) return { comparisons: 0, hits: 0, feasible: false };
+  let lo = 0, hi = pokemons.length - 1, comps = 0, hits = 0;
+  const t = term.trim().toLowerCase();
+  if (!t) return { comparisons: 0, hits: 0, feasible: true };
+  while (lo <= hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    comps++;
+    const p = pokemons[mid];
+    let c: number;
+    if (key === "id") {
+      const n = Number(t);
+      c = isNaN(n) ? 1 : p.id < n ? -1 : p.id > n ? 1 : 0;
+    } else {
+      const a = p.name.toLowerCase();
+      c = a < t ? -1 : a > t ? 1 : 0;
+    }
+    if (c === 0) { hits = 1; break; }
+    if (c < 0) lo = mid + 1; else hi = mid - 1;
+  }
+  return { comparisons: comps, hits, feasible: true };
+}
+
 // Utility: check if pokemons are sorted ascending by key
 export function isSortedBy(pokemons: Pokemon[], key: SearchKey): boolean {
   for (let i = 1; i < pokemons.length; i++) {
