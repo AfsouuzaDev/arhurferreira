@@ -79,6 +79,7 @@ function AppHeader() {
     { to: "/", label: "Dashboard" },
     { to: "/buscar", label: "Buscar" },
     { to: "/benchmark", label: "Análise / Benchmark" },
+    { to: "/persistencia", label: "Persistência" },
   ];
   return (
     <header className="flex flex-wrap items-end justify-between gap-2 mb-4 border-b border-neon-cyan/30 pb-2">
