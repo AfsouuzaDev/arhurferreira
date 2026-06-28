@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PersistenciaRouteImport } from './routes/persistencia'
 import { Route as BuscarRouteImport } from './routes/buscar'
 import { Route as BenchmarkRouteImport } from './routes/benchmark'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PersistenciaRoute = PersistenciaRouteImport.update({
+  id: '/persistencia',
+  path: '/persistencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuscarRoute = BuscarRouteImport.update({
   id: '/buscar',
   path: '/buscar',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
   '/buscar': typeof BuscarRoute
+  '/persistencia': typeof PersistenciaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
   '/buscar': typeof BuscarRoute
+  '/persistencia': typeof PersistenciaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
   '/buscar': typeof BuscarRoute
+  '/persistencia': typeof PersistenciaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/benchmark' | '/buscar'
+  fullPaths: '/' | '/benchmark' | '/buscar' | '/persistencia'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/benchmark' | '/buscar'
-  id: '__root__' | '/' | '/benchmark' | '/buscar'
+  to: '/' | '/benchmark' | '/buscar' | '/persistencia'
+  id: '__root__' | '/' | '/benchmark' | '/buscar' | '/persistencia'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BenchmarkRoute: typeof BenchmarkRoute
   BuscarRoute: typeof BuscarRoute
+  PersistenciaRoute: typeof PersistenciaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/persistencia': {
+      id: '/persistencia'
+      path: '/persistencia'
+      fullPath: '/persistencia'
+      preLoaderRoute: typeof PersistenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/buscar': {
       id: '/buscar'
       path: '/buscar'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BenchmarkRoute: BenchmarkRoute,
   BuscarRoute: BuscarRoute,
+  PersistenciaRoute: PersistenciaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
