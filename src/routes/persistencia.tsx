@@ -192,14 +192,15 @@ function PersistenciaPage() {
 }
 
 function TerminalBox({ title, subtitle, tone, content }: { title: string; subtitle: string; tone: "cyan" | "magenta"; content: string }) {
-  const color = tone === "cyan" ? "neon-cyan" : "neon-magenta";
+  const borderCls = tone === "cyan" ? "border-neon-cyan/40" : "border-neon-magenta/40";
+  const textCls = tone === "cyan" ? "text-neon-cyan" : "text-neon-magenta";
   return (
-    <div className={`panel-cyber clip-cyber p-3 border-2 border-${color}/40`}>
+    <div className={`panel-cyber clip-cyber p-3 border-2 ${borderCls}`}>
       <div className="flex items-center justify-between mb-2">
-        <div className={`text-${color} text-xs font-bold`}>▸ {title}</div>
+        <div className={`${textCls} text-xs font-bold`}>▸ {title}</div>
         <div className="text-[9px] text-foreground/50 font-mono">{subtitle}</div>
       </div>
-      <pre className={`text-[10px] font-mono leading-tight text-${color} bg-black/60 p-3 max-h-96 overflow-auto whitespace-pre`}>
+      <pre className={`text-[10px] font-mono leading-tight ${textCls} bg-black/60 p-3 max-h-96 overflow-auto whitespace-pre`}>
 {content}
       </pre>
     </div>
