@@ -14,9 +14,46 @@ interface DetailResp {
   sprites: { front_default: string | null; other: { "official-artwork": { front_default: string | null } } };
 }
 
+const STORAGE_KEY = "cyber:pokemons:disk";
+const OFFLINE_KEY = "cyber:pokemons:offline";
+
+export function readDiskCache(): Pokemon[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as Pokemon[]) : null;
+  } catch { return null; }
+}
+
+export function writeDiskCache(data: Pokemon[]) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+export function hasDiskCache(): boolean {
+  return !!readDiskCache();
+}
+
+export function isOfflineMode(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(OFFLINE_KEY) === "1";
+}
+
+export function setOfflineMode(v: boolean) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(OFFLINE_KEY, v ? "1" : "0");
+}
+
 async function fetchPokemons(): Promise<Pokemon[]> {
+  if (isOfflineMode()) {
+    const disk = readDiskCache();
+    if (!disk || disk.length === 0) {
+      throw new Error("MODO OFFLINE ATIVO: arquivo de cache não encontrado em disco. Desative o modo offline ou salve o cache primeiro na aba PERSISTÊNCIA.");
+    }
+    return disk;
+  }
+
   const list: ListResp = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500").then((r) => r.json());
-  // Fetch in batches of 50 in parallel
   const results: Pokemon[] = [];
   const batchSize = 50;
   for (let i = 0; i < list.results.length; i += batchSize) {
@@ -47,5 +84,6 @@ export function usePokemons() {
     queryFn: fetchPokemons,
     staleTime: Infinity,
     gcTime: Infinity,
+    retry: false,
   });
 }
